@@ -1,42 +1,26 @@
-name: CI Pipeline for Finance Tracker
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # or your working branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.tester1230 }}
+        password: ${{ secrets.test$r }}
 
-      - name: Build Docker Image
-        run: |
-          docker build -t teja5gowda/Finance-Tracker .
+    - name: Build the Docker image
+      run: docker build -t ${{ secrets.tester1230 }}/finance-tracker:latest .
 
-      - name: Run Tests
-        run: |
-          docker run teja5gowda/Finance-Tracker pytest tests/
-
-  docker-push:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Docker Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Push Docker Image to Docker Hub
-        run: |
-          docker push yourusername/finance-tracker
+    - name: Push the Docker image
+      run: docker push ${{ secrets.tester1230 }}/finance-tracker:latest
